@@ -9,10 +9,11 @@ def findRatio(points):
 
     dist1 = math.sqrt((x[0]-x[1])**2 + (y[0]-y[1])**2)
     dist2 = math.sqrt((x[2]-x[3])**2 + (y[2]-y[3])**2)
-    ratio = dist1/dist2
-
-    return ratio
-
+    # print(str(y[2])+" "+str(y[3]))
+    if(dist2!=0):
+        ratio = dist1/dist2
+        return ratio
+    return 0
 
 def generateFeatures(landmarkCoordinates):
     keyPoints = [18, 22, 23, 27, 37, 40, 43, 46, 28, 32, 34, 36, 5, 9, 13, 49, 55, 52, 58,61,63,65,67]
