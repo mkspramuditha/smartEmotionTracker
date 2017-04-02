@@ -65,8 +65,10 @@ def Predict_Emotion(filename):
         # print(pca_features)
 
         print "Predicting using trained model........"
+        emo=classify.predict_proba(features)
         emo_predicts=classify.predict(features)
-        print(emo_predicts)
+
+        print(emo)
         print "Predicted emotion using trained data is { " + emotions[int(emo_predicts[0])] + " }"
         print ""
 
