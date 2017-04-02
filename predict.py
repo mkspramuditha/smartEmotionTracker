@@ -10,7 +10,7 @@ import argparse,sys
 try:
     from featureExtractor import*
 except ImportError:
-    print "Make sure featureExtractor.pyc file is in the current directory"
+    print "Make sure FeatureGen.pyc file is in the current directory"
     exit()
 
 try:
@@ -23,7 +23,8 @@ except ImportError:
         print "Make sure you have OpenCV, dLib, scikit learn and skimage libraries properly installed"
         exit()
 
-emotions={ 1:"Anger", 2:"Contempt", 3:"Disgust", 4:"Fear", 5:"Happy", 6:"Sadness", 7:"Surprise"}
+emotions = ["anger", "contempt", "disgust", "fear", "happiness", "sadness", "surprise"] #Emotion list
+# emotions={ 1:"Anger", 2:"Contempt", 3:"Disgust", 4:"Fear", 5:"Happy", 6:"Sadness", 7:"Surprise"}
 
 def Predict_Emotion(filename):
 
@@ -60,10 +61,12 @@ def Predict_Emotion(filename):
         features= numpy.asarray(features)
 
         print "Performing PCA Transform......."
-        # pca_features=pca.transform(features)
+        pca_features=pca.transform(features)
+        # print(pca_features)
 
         print "Predicting using trained model........"
         emo_predicts=classify.predict(features)
+        print(emo_predicts)
         print "Predicted emotion using trained data is { " + emotions[int(emo_predicts[0])] + " }"
         print ""
 
@@ -105,7 +108,7 @@ if __name__ == "__main__":
 
     try:
         classify=joblib.load("model.pkl")
-        # pca=joblib.load("pcadata.pkl")
+        pca=joblib.load("pcadata.pkl")
     except:
         print "Unable to load trained data. \nMake sure that traindata.pkl and pcadata.pkl are in the current directory"
         exit()

@@ -1,6 +1,7 @@
 import cv2, glob, random, math, numpy as np, dlib, itertools
 from sklearn.svm import SVC
 from sklearn.externals import joblib
+from sklearn.decomposition import PCA
 
 try:
     from featureExtractor import*
@@ -8,12 +9,11 @@ except ImportError:
     print "Make sure FeatureGen.pyc file is in the current directory"
     exit()
 
-
-emotions = ["anger", "contempt", "disgust", "fear", "happiness", "neutral", "sadness", "surprise"] #Emotion list
+emotions = ["anger", "contempt", "disgust", "fear", "happiness","sadness", "surprise"] #Emotion list
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat") #Or set this to whatever you named the downloaded file
-clf = SVC(kernel='linear', probability=True, tol=1e-3)#, verbose = True) #Set the classifier as a support vector machines with polynomial kernel
+clf = SVC(kernel='linear', probability=False, tol=1e-3,C=0.025 ,gamma=0.00000001)#, verbose = True) #Set the classifier as a support vector machines with polynomial kernel
 
 def get_files(emotion): #Define function to get file list, randomly shuffle it and split 80/20
     files = glob.glob("sorted_set/%s/*" %emotion)
@@ -61,5 +61,10 @@ def make_sets():
 training_data, training_labels = make_sets()
 npar_train = np.array(training_data)
 npar_trainlabs = np.array(training_labels)
+# pca=joblib.load("pcadata.pkl")
+
+# pca.fit(npar_train)
+# ash = pca.transform(npar_train)
+# joblib.dump(pca,'pca.pkl')
 clf.fit(npar_train, npar_trainlabs)
 joblib.dump(clf, 'model.pkl')
