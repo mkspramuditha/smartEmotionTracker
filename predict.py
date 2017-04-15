@@ -6,16 +6,27 @@
 
 import argparse,sys
 
-from flask import Flask,request
+from flask import Flask,request,render_template
+from werkzeug import secure_filename
+import os
+
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = './images'
 
-@app.route('/', methods=['POST','GET'])
+@app.route('/', methods=['GET','POST'])
 def index():
-    name=request.args.get('imageLink')
-    emotion = Predict_Emotion(name)
-    print(name)
-    return emotion
+    return render_template('index.html')
+
+@app.route('/predict', methods=['POST','GET'])
+def predict():
+    if request.method == 'POST':
+        f = request.files['file']
+        name=os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(f.filename))
+        f.save(name)
+        emotion = Predict_Emotion(name)
+        print(name)
+        return emotion
 
 try:
     from featureExtractor import*
