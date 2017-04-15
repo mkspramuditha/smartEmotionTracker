@@ -4,8 +4,18 @@
 #Author:Adithya Selvaprithiviraj
 #PS: Not trained for nuetral expression
 
-
 import argparse,sys
+
+from flask import Flask,request
+
+app = Flask(__name__)
+
+@app.route('/', methods=['POST','GET'])
+def index():
+    name=request.args.get('imageLink')
+    emotion = Predict_Emotion(name)
+    print(name)
+    return emotion
 
 try:
     from featureExtractor import*
@@ -36,8 +46,8 @@ def Predict_Emotion(filename):
         print "Exception: File Not found."
         return
 
-    win.clear_overlay()
-    win.set_image(img)
+    # win.clear_overlay()
+    # win.set_image(img)
 
     dets=detector(img,1)
 
@@ -73,24 +83,25 @@ def Predict_Emotion(filename):
         print ""
 
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(cvimg,emotions[int(emo_predicts[0])],(20,20), font, 1,(0,255,255),2)
+        return emotions[int(emo_predicts[0])]
 
-        win.add_overlay(shape)
+        # cv2.putText(cvimg,emotions[int(emo_predicts[0])],(20,20), font, 1,(0,255,255),2)
 
-    cv2.namedWindow("Output")
-    cv2.imshow("Output",cvimg)
-    cv2.waitKey(0)
+        # win.add_overlay(shape)
+
+    # cv2.namedWindow("Output")
+    # cv2.imshow("Output",cvimg)
+    # cv2.waitKey(0)
 
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-i', type=str, nargs='+', help="Enter the filenames with extention of an Image")
-    arg=parser.parse_args()
-
-    if not len(sys.argv) > 1:
-        parser.print_help()
-        exit()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('-i', type=str, nargs='+', help="Enter the filenames with extention of an Image")
+    # arg=parser.parse_args()
+    #
+    # if not len(sys.argv) > 1:
+    #     parser.print_help()
+    #     exit()
 
     landmark_path="shape_predictor_68_face_landmarks.dat"
 
@@ -114,6 +125,7 @@ if __name__ == "__main__":
     except:
         print "Unable to load trained data. \nMake sure that traindata.pkl and pcadata.pkl are in the current directory"
         exit()
+    app.run(debug=True)
 
-    for filename in arg.i:
-        Predict_Emotion(filename)
+    # for filename in arg.i:
+    #     Predict_Emotion(filename)
