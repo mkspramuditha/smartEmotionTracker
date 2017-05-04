@@ -11,7 +11,7 @@ from werkzeug import secure_filename
 import os
 
 
-app = Flask(__name__)
+app = Flask(__name__,static_url_path = "/images", static_folder = "images")
 app.config['UPLOAD_FOLDER'] = './images'
 
 @app.route('/', methods=['GET','POST'])
@@ -25,8 +25,10 @@ def predict():
         name=os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(f.filename))
         f.save(name)
         emotion = Predict_Emotion(name)
-        print(name)
-        return emotion
+        print(secure_filename(f.filename))
+        filename=os.path.realpath(f.filename)
+        return render_template('predict.html',image=secure_filename(f.filename),emotion=emotion)
+        # return emotion
 
 try:
     from featureExtractor import*
